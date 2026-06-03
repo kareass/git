@@ -101,3 +101,30 @@ E:/wangluoanq1/PHP/phpstudy_pro/Extensions/MySQL8.0.12/bin/mysql.exe -u root -pr
 - All `/api/*` endpoints require authentication except `/api/auth/login`
 - Task defer creates new task for tomorrow and marks original as complete
 - Passwords hashed with bcrypt (cost factor 12)
+
+## Testing
+
+```bash
+cd frontend
+npm test                    # Run all tests
+npx playwright test         # Run Playwright E2E tests
+npx playwright test tests/app.spec.ts --reporter=line  # Run specific test file
+npx playwright show-report  # View HTML test report
+```
+
+**Playwright test coverage:**
+- Login page loading
+- User login (admin/admin123)
+- Task list page
+- Create new task
+- Task detail dialog
+
+## Git
+
+```bash
+git status                  # Check status
+git log --oneline -5        # View recent commits
+git push origin main        # Push to remote
+```
+
+**Remote:** `https://github.com/kareass/git.git`
