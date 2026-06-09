@@ -1,5 +1,5 @@
 # backend/app/api/routes/tasks.py
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -16,13 +16,23 @@ router = APIRouter(prefix="/tasks", tags=["tasks"])
 @router.get("", response_model=TaskListResponse)
 async def get_tasks(
     is_completed: Optional[bool] = Query(None),
+    start_date: Optional[str] = Query(None, description="开始日期 YYYY-MM-DD"),
+    end_date: Optional[str] = Query(None, description="结束日期 YYYY-MM-DD"),
+    priority: Optional[str] = Query(None, description="优先级筛选"),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    # 转换日期字符串
+    start_dt = datetime.strptime(start_date, "%Y-%m-%d") if start_date else None
+    end_dt = datetime.strptime(end_date, "%Y-%m-%d") + timedelta(days=1) if end_date else None
+
     task_service = TaskService(db)
-    tasks, total = await task_service.get_tasks(current_user.id, is_completed, page, page_size)
+    tasks, total = await task_service.get_tasks(
+        current_user.id, is_completed, page, page_size,
+        start_dt, end_dt, priority
+    )
     pages = (total + page_size - 1) // page_size if total > 0 else 1
     return TaskListResponse(
         items=[TaskResponse.model_validate(t) for t in tasks],
