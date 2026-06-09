@@ -127,3 +127,88 @@
     @apply font-sans;
     }
 }
+
+/* Glassmorphism styles */
+.glass {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.dark .glass-card {
+  background: rgba(30, 30, 40, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-sidebar {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark .glass-sidebar {
+  background: rgba(20, 20, 30, 0.6);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Card hover effects */
+.glass-card {
+  transition: all 0.2s ease-out;
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Button glow animation */
+.btn-glow {
+  transition: all 0.2s ease-out;
+}
+
+.btn-glow:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-glow:active {
+  transform: scale(0.98);
+}
+
+/* Priority bar colors */
+.priority-bar-normal { border-left: 4px solid transparent; }
+.priority-bar-medium { border-left: 4px solid #fb923c; }
+.priority-bar-urgent { border-left: 4px solid #f87171; }
+
+/* Priority Badge styles */
+.badge-normal {
+  background: rgba(71, 85, 105, 0.1);
+  color: #475569;
+}
+
+.badge-medium {
+  background: rgba(251, 146, 60, 0.2);
+  color: #ea580c;
+}
+
+.badge-urgent {
+  background: rgba(248, 113, 113, 0.2);
+  color: #dc2626;
+}
