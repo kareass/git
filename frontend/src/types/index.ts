@@ -15,6 +15,8 @@ export interface LoginResponse {
   user: User
 }
 
+export type TaskPriority = 'normal' | 'medium' | 'urgent'
+
 export interface Task {
   id: number
   name: string
@@ -24,6 +26,7 @@ export interface Task {
   is_completed: boolean
   remark: string | null
   user_id: number
+  priority: TaskPriority
   created_at: string
   updated_at: string
 }
@@ -44,6 +47,7 @@ export interface CreateTaskRequest {
   register_time: string
   publisher: string
   remark?: string
+  priority?: TaskPriority
 }
 
 export interface UpdateTaskRequest {
@@ -52,6 +56,7 @@ export interface UpdateTaskRequest {
   publisher?: string
   is_completed?: boolean
   remark?: string
+  priority?: TaskPriority
 }
 
 export interface CreateTaskDetailRequest {
