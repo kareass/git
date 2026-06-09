@@ -19,8 +19,14 @@ export const authApi = {
 
 // Task APIs
 export const taskApi = {
-  list: (params: { page?: number; page_size?: number; is_completed?: boolean; keyword?: string; sort?: string }) =>
-    api.get<PageResult<Task>>('/tasks', { params }),
+  list: (params: {
+    is_completed?: boolean
+    start_date?: string
+    end_date?: string
+    priority?: string
+    page?: number
+    page_size?: number
+  }) => api.get<PageResult<Task>>('/tasks', { params }),
 
   get: (id: number) => api.get<Task>(`/tasks/${id}`),
 
