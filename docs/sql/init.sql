@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS `sys_task` (
   `publisher` VARCHAR(50) NOT NULL COMMENT '发布人',
   `is_completed` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否完成：0=未完成，1=已完成',
   `remark` TEXT NULL COMMENT '备注',
+  `priority` ENUM('normal', 'medium', 'urgent') NOT NULL DEFAULT 'normal' COMMENT '优先级',
   `user_id` INT NOT NULL COMMENT '所属用户ID',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -71,10 +72,10 @@ INSERT INTO `sys_user` (`username`, `password_hash`, `role`) VALUES
 ('user1', '$2b$12$F4cZCKmUURsgi5C7snXvvuhr6i2vKKqAXdIMoWJZkvI6To5QH9gay', 'user');
 
 -- 测试任务数据
-INSERT INTO `sys_task` (`name`, `register_time`, `publisher`, `is_completed`, `remark`, `user_id`) VALUES
-('完成用户登录功能开发', '2026-05-28 09:00:00', 'admin', 0, '需要对接前端', 1),
-('修复任务列表分页问题', '2026-05-28 10:30:00', 'admin', 0, NULL, 1),
-('完成后台数据库设计', '2026-05-27 14:00:00', 'user1', 1, '已输出ER图', 2);
+INSERT INTO `sys_task` (`name`, `register_time`, `publisher`, `is_completed`, `remark`, `priority`, `user_id`) VALUES
+('完成用户登录功能开发', '2026-05-28 09:00:00', 'admin', 0, '需要对接前端', 'medium', 1),
+('修复任务列表分页问题', '2026-05-28 10:30:00', 'admin', 0, NULL, 'normal', 1),
+('完成后台数据库设计', '2026-05-27 14:00:00', 'user1', 1, '已输出ER图', 'urgent', 2);
 
 -- 测试任务明细
 INSERT INTO `sys_task_detail` (`task_id`, `name`, `progress`, `time`, `remark`) VALUES

@@ -1,8 +1,15 @@
 # backend/app/models/task.py
+import enum
 from datetime import datetime
-from sqlalchemy import String, Text, DateTime, Boolean, Integer, ForeignKey, func
+from sqlalchemy import String, Text, DateTime, Boolean, Integer, ForeignKey, func, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
+
+
+class TaskPriority(str, enum.Enum):
+    normal = "normal"
+    medium = "medium"
+    urgent = "urgent"
 
 
 class Task(Base):
@@ -15,6 +22,9 @@ class Task(Base):
     publisher: Mapped[str] = mapped_column(String(50), nullable=False)
     is_completed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     remark: Mapped[str | None] = mapped_column(Text, nullable=True)
+    priority: Mapped[TaskPriority] = mapped_column(
+        SQLEnum(TaskPriority), default=TaskPriority.normal, nullable=False
+    )
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("sys_user.id"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(
