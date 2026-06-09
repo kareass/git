@@ -25,8 +25,18 @@ async def get_tasks(
     current_user: User = Depends(get_current_user),
 ):
     # 转换日期字符串
-    start_dt = datetime.strptime(start_date, "%Y-%m-%d") if start_date else None
-    end_dt = datetime.strptime(end_date, "%Y-%m-%d") + timedelta(days=1) if end_date else None
+    start_dt = None
+    end_dt = None
+    if start_date:
+        try:
+            start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+        except ValueError:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid start_date format. Use YYYY-MM-DD")
+    if end_date:
+        try:
+            end_dt = datetime.strptime(end_date, "%Y-%m-%d") + timedelta(days=1)
+        except ValueError:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid end_date format. Use YYYY-MM-DD")
 
     task_service = TaskService(db)
     tasks, total = await task_service.get_tasks(

@@ -29,7 +29,7 @@ function navigate(path: string) {
 <template>
   <aside
     :class="cn(
-      'flex flex-col border-r bg-sidebar transition-all duration-300',
+      'flex flex-col border-r bg-sidebar transition-all duration-300 glass-sidebar',
       isCollapsed ? 'w-16' : 'w-64'
     )"
   >

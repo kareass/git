@@ -94,6 +94,7 @@ class TaskService:
             remark=task.remark,
             user_id=task.user_id,
             is_completed=False,
+            priority=task.priority,
         )
         self.db.add(new_task)
 

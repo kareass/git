@@ -29,14 +29,22 @@ const router = createRouter({
 // Navigation guard
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
-  // TEMP: Bypass auth for demo
-  if (to.path === '/tasks') {
-    next()
-    return
+  const tokenTime = localStorage.getItem('token_time')
+  const TOKEN_EXPIRE_MS = 12 * 60 * 60 * 1000
+
+  // 检查token是否过期
+  const isTokenExpired = token && tokenTime &&
+    (Date.now() - Number(tokenTime)) > TOKEN_EXPIRE_MS
+
+  // 清除过期token
+  if (isTokenExpired) {
+    localStorage.removeItem('token')
+    localStorage.removeItem('token_time')
   }
-  if (to.meta.requiresAuth && !token) {
+
+  if (to.meta.requiresAuth && isTokenExpired) {
     next('/login')
-  } else if (to.path === '/login' && token) {
+  } else if (to.path === '/login' && !isTokenExpired && token) {
     next('/tasks')
   } else {
     next()

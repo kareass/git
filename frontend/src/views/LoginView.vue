@@ -35,8 +35,8 @@ async function handleLogin() {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-background">
-    <Card class="w-[400px]">
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-slate-50 to-slate-200 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+    <Card class="w-[400px] glass-card">
       <CardHeader>
         <CardTitle class="text-center text-2xl">需求开发事项统计</CardTitle>
       </CardHeader>
