@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/
 import { Badge } from '@/components/ui/badge'
 import Sidebar from '@/components/Sidebar.vue'
 import TaskTable from '@/components/TaskTable.vue'
-import type { Task, TaskDetail } from '@/types'
+import type { Task, TaskDetail, TaskPriority } from '@/types'
 
 const taskStore = useTaskStore()
 const authStore = useAuthStore()
@@ -23,11 +23,25 @@ const showDetailDialog = ref(false)
 const showAddDetailDialog = ref(false)
 const editingDetail = ref<TaskDetail | null>(null)
 
+// 查询相关状态
+const startDate = ref('')
+const endDate = ref('')
+
+// 优先级选项
+const priorityOptions = [
+  { label: '全部', value: '' },
+  { label: '正常', value: 'normal' },
+  { label: '中', value: 'medium' },
+  { label: '紧急', value: 'urgent' }
+]
+const selectedPriority = ref('')
+
 const newTask = ref({
   name: '',
   register_time: new Date().toISOString().slice(0, 16),
   publisher: authStore.user?.username || '',
-  remark: ''
+  remark: '',
+  priority: 'normal' as TaskPriority
 })
 
 const newDetail = ref({
@@ -42,7 +56,29 @@ onMounted(() => {
 })
 
 async function loadTasks() {
-  await taskStore.fetchTasks({ is_completed: activeTab.value === 'completed' })
+  await taskStore.fetchTasks({
+    is_completed: activeTab.value === 'completed',
+    start_date: startDate.value || undefined,
+    end_date: endDate.value || undefined,
+    priority: selectedPriority.value || undefined
+  })
+}
+
+// 查询方法
+function handleQuery() {
+  taskStore.fetchTasks({
+    is_completed: activeTab.value === 'completed',
+    start_date: startDate.value || undefined,
+    end_date: endDate.value || undefined,
+    priority: selectedPriority.value || undefined
+  })
+}
+
+function handleReset() {
+  startDate.value = ''
+  endDate.value = ''
+  selectedPriority.value = ''
+  loadTasks()
 }
 
 function onTabChange(value: string) {
@@ -55,10 +91,11 @@ async function handleAddTask() {
     name: newTask.value.name,
     register_time: newTask.value.register_time.replace('T', ' '),
     publisher: newTask.value.publisher,
-    remark: newTask.value.remark
+    remark: newTask.value.remark,
+    priority: newTask.value.priority
   })
   showAddDialog.value = false
-  newTask.value = { name: '', register_time: new Date().toISOString().slice(0, 16), publisher: authStore.user?.username || '', remark: '' }
+  newTask.value = { name: '', register_time: new Date().toISOString().slice(0, 16), publisher: authStore.user?.username || '', remark: '', priority: 'normal' as TaskPriority }
   loadTasks()
 }
 
@@ -138,12 +175,12 @@ function handleLogout() {
 </script>
 
 <template>
-  <div class="flex min-h-screen bg-background">
+  <div class="flex min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-slate-200 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
     <Sidebar />
 
     <div class="flex-1 flex flex-col">
       <!-- Header -->
-      <header class="h-16 border-b bg-card/80 backdrop-blur-sm flex items-center justify-between px-6">
+      <header class="h-16 border-b glass flex items-center justify-between px-6">
         <div class="flex items-center gap-4">
           <h1 class="text-xl font-semibold">任务管理</h1>
           <Badge variant="secondary" class="text-xs">MVP</Badge>
@@ -153,13 +190,13 @@ function handleLogout() {
             <span class="text-sm text-muted-foreground">当前用户</span>
             <span class="text-sm font-medium">{{ authStore.user?.username }}</span>
           </div>
-          <Button variant="outline" size="sm" @click="handleLogout">退出</Button>
+          <Button variant="outline" size="sm" class="btn-glow" @click="handleLogout">退出</Button>
         </div>
       </header>
 
       <!-- Main Content -->
       <main class="flex-1 p-6">
-        <Card class="border-0 shadow-md bg-card/50">
+        <Card class="border-0 shadow-md bg-card/50" glass>
           <CardContent class="p-6">
             <Tabs :model-value="activeTab" @update:model-value="onTabChange">
               <div class="flex items-center justify-between mb-6">
@@ -174,11 +211,11 @@ function handleLogout() {
                 </div>
                 <Dialog :open="showAddDialog" @update:open="(val) => showAddDialog = val">
                   <DialogTrigger as-child>
-                    <Button class="gap-2">
+                    <Button class="gap-2 btn-glow">
                       <span>+</span> 新增任务
                     </Button>
                   </DialogTrigger>
-                  <DialogContent>
+                  <DialogContent glass>
                     <DialogHeader>
                       <DialogTitle class="text-lg">新增任务</DialogTitle>
                     </DialogHeader>
@@ -188,6 +225,18 @@ function handleLogout() {
                           <FormLabel>任务名称</FormLabel>
                           <FormControl>
                             <Input v-model="newTask.name" placeholder="请输入任务名称" required />
+                          </FormControl>
+                        </FormItem>
+                      </FormField>
+                      <FormField name="priority">
+                        <FormItem>
+                          <FormLabel>优先级</FormLabel>
+                          <FormControl>
+                            <select v-model="newTask.priority" class="h-8 rounded-lg border bg-transparent px-2 w-full">
+                              <option value="normal">正常</option>
+                              <option value="medium">中</option>
+                              <option value="urgent">紧急</option>
+                            </select>
                           </FormControl>
                         </FormItem>
                       </FormField>
@@ -222,7 +271,7 @@ function handleLogout() {
 
                 <!-- 任务详情弹窗 -->
                 <Dialog :open="showDetailDialog" @update:open="(val) => showDetailDialog = val">
-                  <DialogContent class="max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+                  <DialogContent glass class="max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
                     <DialogHeader>
                       <DialogTitle class="text-lg">任务详情 - {{ selectedTask?.name }}</DialogTitle>
                     </DialogHeader>
@@ -284,7 +333,7 @@ function handleLogout() {
 
                 <!-- 添加/编辑明细弹窗 -->
                 <Dialog :open="showAddDetailDialog" @update:open="(val) => showAddDetailDialog = val">
-                  <DialogContent>
+                  <DialogContent glass>
                     <DialogHeader>
                       <DialogTitle>{{ editingDetail ? '编辑明细' : '添加明细' }}</DialogTitle>
                     </DialogHeader>
@@ -325,6 +374,28 @@ function handleLogout() {
                     </form>
                   </DialogContent>
                 </Dialog>
+              </div>
+
+              <!-- 查询面板 -->
+              <div class="flex items-center gap-4 mb-6 p-4 glass-card rounded-lg">
+                <div class="flex items-center gap-2">
+                  <label class="text-sm font-medium">开始日期</label>
+                  <Input v-model="startDate" type="date" class="w-36" />
+                </div>
+                <div class="flex items-center gap-2">
+                  <label class="text-sm font-medium">结束日期</label>
+                  <Input v-model="endDate" type="date" class="w-36" />
+                </div>
+                <div class="flex items-center gap-2">
+                  <label class="text-sm font-medium">优先级</label>
+                  <select v-model="selectedPriority" class="h-8 rounded-lg border bg-transparent px-2">
+                    <option v-for="opt in priorityOptions" :key="opt.value" :value="opt.value">
+                      {{ opt.label }}
+                    </option>
+                  </select>
+                </div>
+                <Button class="btn-glow" @click="handleQuery">查询</Button>
+                <Button variant="outline" class="btn-glow" @click="handleReset">重置</Button>
               </div>
 
               <TabsContent value="pending">
