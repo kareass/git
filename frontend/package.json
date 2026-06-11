@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "db": "\"E:/wangluoanq1/PHP/phpstudy_pro/Extensions/MySQL8.0.12/bin/mysqld.exe\" --defaults-file=\"E:/wangluoanq1/PHP/phpstudy_pro/Extensions/MySQL8.0.12/my.ini\"",
     "build": "vite build",
     "preview": "vite preview"
   },
