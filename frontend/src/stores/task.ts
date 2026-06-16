@@ -17,6 +17,7 @@ export const useTaskStore = defineStore('task', () => {
     start_date?: string
     end_date?: string
     priority?: string
+    name?: string
   } = {}) {
     loading.value = true
     try {

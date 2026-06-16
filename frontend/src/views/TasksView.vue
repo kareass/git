@@ -28,6 +28,7 @@ const editingPriorityValue = ref<TaskPriority>('normal')
 // 查询相关状态
 const startDate = ref('')
 const endDate = ref('')
+const taskName = ref('')
 
 // 优先级选项
 const priorityOptions = [
@@ -62,7 +63,8 @@ async function loadTasks() {
     is_completed: activeTab.value === 'completed',
     start_date: startDate.value || undefined,
     end_date: endDate.value || undefined,
-    priority: selectedPriority.value || undefined
+    priority: selectedPriority.value || undefined,
+    name: taskName.value || undefined
   })
 }
 
@@ -72,7 +74,8 @@ function handleQuery() {
     is_completed: activeTab.value === 'completed',
     start_date: startDate.value || undefined,
     end_date: endDate.value || undefined,
-    priority: selectedPriority.value || undefined
+    priority: selectedPriority.value || undefined,
+    name: taskName.value || undefined
   })
 }
 
@@ -80,6 +83,7 @@ function handleReset() {
   startDate.value = ''
   endDate.value = ''
   selectedPriority.value = ''
+  taskName.value = ''
   loadTasks()
 }
 
@@ -239,57 +243,90 @@ function handleLogout() {
                       <span>+</span> 新增任务
                     </Button>
                   </DialogTrigger>
-                  <DialogContent glass>
-                    <DialogHeader>
-                      <DialogTitle class="text-lg">新增任务</DialogTitle>
+                  <DialogContent glass class="max-w-4xl max-h-[99vh] min-h-[70vh]">
+                    <DialogHeader class="flex-shrink-0 pb-4 border-b border-border/50">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center">
+                          <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        </div>
+                        <div>
+                          <DialogTitle class="text-xl font-semibold">新增任务</DialogTitle>
+                          <p class="text-sm text-muted-foreground mt-0.5">创建新的任务</p>
+                        </div>
+                      </div>
                     </DialogHeader>
-                    <form @submit.prevent="handleAddTask" class="space-y-4">
-                      <FormField name="name">
-                        <FormItem>
-                          <FormLabel>任务名称</FormLabel>
-                          <FormControl>
-                            <Input v-model="newTask.name" placeholder="请输入任务名称" required />
-                          </FormControl>
-                        </FormItem>
-                      </FormField>
-                      <FormField name="priority">
-                        <FormItem>
-                          <FormLabel>优先级</FormLabel>
-                          <FormControl>
-                            <select v-model="newTask.priority" class="h-8 rounded-lg border bg-transparent px-2 w-full">
-                              <option value="normal">正常</option>
-                              <option value="medium">中</option>
-                              <option value="urgent">紧急</option>
-                            </select>
-                          </FormControl>
-                        </FormItem>
-                      </FormField>
-                      <FormField name="register_time">
-                        <FormItem>
-                          <FormLabel>登记时间</FormLabel>
-                          <FormControl>
-                            <Input v-model="newTask.register_time" type="datetime-local" required />
-                          </FormControl>
-                        </FormItem>
-                      </FormField>
-                      <FormField name="publisher">
-                        <FormItem>
-                          <FormLabel>发布人</FormLabel>
-                          <FormControl>
-                            <Input v-model="newTask.publisher" required />
-                          </FormControl>
-                        </FormItem>
-                      </FormField>
-                      <FormField name="remark">
-                        <FormItem>
-                          <FormLabel>备注</FormLabel>
-                          <FormControl>
-                            <Input v-model="newTask.remark" placeholder="可选" />
-                          </FormControl>
-                        </FormItem>
-                      </FormField>
-                      <Button type="submit" class="w-full">保存</Button>
-                    </form>
+                    <div class="flex-1 min-h-0 overflow-y-auto py-5">
+                      <form @submit.prevent="handleAddTask" class="space-y-5">
+                        <div class="bg-gradient-to-r from-slate-50/80 to-slate-100/50 dark:from-slate-800/50 dark:to-slate-800/30 rounded-2xl p-5 border border-slate-200/50 dark:border-slate-700/50 space-y-4">
+                          <FormField name="name">
+                            <FormItem>
+                              <FormLabel class="text-sm font-medium flex items-center gap-2">
+                                <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+                                任务名称
+                              </FormLabel>
+                              <FormControl>
+                                <Input v-model="newTask.name" placeholder="请输入任务名称" required class="h-11 bg-white/80 dark:bg-slate-900/80 border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" />
+                              </FormControl>
+                            </FormItem>
+                          </FormField>
+                          <FormField name="priority">
+                            <FormItem>
+                              <FormLabel class="text-sm font-medium flex items-center gap-2">
+                                <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                优先级
+                              </FormLabel>
+                              <FormControl>
+                                <select v-model="newTask.priority" class="h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 px-3 w-full focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                                  <option value="normal">正常</option>
+                                  <option value="medium">中</option>
+                                  <option value="urgent">紧急</option>
+                                </select>
+                              </FormControl>
+                            </FormItem>
+                          </FormField>
+                          <FormField name="register_time">
+                            <FormItem>
+                              <FormLabel class="text-sm font-medium flex items-center gap-2">
+                                <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                登记时间
+                              </FormLabel>
+                              <FormControl>
+                                <Input v-model="newTask.register_time" type="datetime-local" required class="h-11 bg-white/80 dark:bg-slate-900/80 border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500" />
+                              </FormControl>
+                            </FormItem>
+                          </FormField>
+                          <FormField name="publisher">
+                            <FormItem>
+                              <FormLabel class="text-sm font-medium flex items-center gap-2">
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                发布人
+                              </FormLabel>
+                              <FormControl>
+                                <Input v-model="newTask.publisher" required class="h-11 bg-white/80 dark:bg-slate-900/80 border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-slate-500/20 focus:border-slate-500" />
+                              </FormControl>
+                            </FormItem>
+                          </FormField>
+                          <FormField name="remark">
+                            <FormItem>
+                              <FormLabel class="text-sm font-medium flex items-center gap-2">
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+                                备注
+                              </FormLabel>
+                              <FormControl>
+                                <Input v-model="newTask.remark" placeholder="可选" class="h-11 bg-white/80 dark:bg-slate-900/80 border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-slate-500/20 focus:border-slate-500" />
+                              </FormControl>
+                            </FormItem>
+                          </FormField>
+                        </div>
+                        <div class="flex gap-3 pt-2">
+                          <Button type="button" variant="outline" class="flex-1 h-11 rounded-xl" @click="showAddDialog = false">取消</Button>
+                          <Button type="submit" class="flex-1 h-11 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 shadow-lg shadow-emerald-500/25">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            保存
+                          </Button>
+                        </div>
+                      </form>
+                    </div>
                   </DialogContent>
                 </Dialog>
 
@@ -507,6 +544,10 @@ function handleLogout() {
 
               <!-- 查询面板 -->
               <div class="flex items-center gap-4 mb-6 p-4 glass-card rounded-lg">
+                <div class="flex items-center gap-2">
+                  <label class="text-sm font-medium">任务名称</label>
+                  <Input v-model="taskName" placeholder="请输入任务名称" class="w-40" />
+                </div>
                 <div class="flex items-center gap-2">
                   <label class="text-sm font-medium">开始日期</label>
                   <Input v-model="startDate" type="date" class="w-36" />

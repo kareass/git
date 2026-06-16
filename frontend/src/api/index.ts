@@ -24,6 +24,7 @@ export const taskApi = {
     start_date?: string
     end_date?: string
     priority?: string
+    name?: string
     page?: number
     page_size?: number
   }) => api.get<PageResult<Task>>('/tasks', { params }),

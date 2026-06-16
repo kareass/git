@@ -21,6 +21,7 @@ class TaskService:
         start_date: Optional[datetime] = None,
         end_date: Optional[datetime] = None,
         priority: Optional[str] = None,
+        name: Optional[str] = None,
     ) -> tuple[list[Task], int]:
         query = select(Task).where(Task.user_id == user_id)
         if is_completed is not None:
@@ -31,6 +32,8 @@ class TaskService:
             query = query.where(Task.register_time <= end_date)
         if priority:
             query = query.where(Task.priority == priority)
+        if name:
+            query = query.where(Task.name.contains(name))
         query = query.order_by(Task.created_at.desc())
 
         # Count

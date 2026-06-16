@@ -19,6 +19,7 @@ async def get_tasks(
     start_date: Optional[str] = Query(None, description="开始日期 YYYY-MM-DD"),
     end_date: Optional[str] = Query(None, description="结束日期 YYYY-MM-DD"),
     priority: Optional[str] = Query(None, description="优先级筛选"),
+    name: Optional[str] = Query(None, description="任务名称搜索"),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
@@ -41,7 +42,7 @@ async def get_tasks(
     task_service = TaskService(db)
     tasks, total = await task_service.get_tasks(
         current_user.id, is_completed, page, page_size,
-        start_dt, end_dt, priority
+        start_dt, end_dt, priority, name
     )
     pages = (total + page_size - 1) // page_size if total > 0 else 1
     return TaskListResponse(
