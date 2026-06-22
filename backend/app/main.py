@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.config import settings
-from app.api.routes import auth, tasks
+from app.api.routes import auth, tasks, work_orders
 
 
 @asynccontextmanager
@@ -34,6 +34,7 @@ app.add_middleware(
 # Routes
 app.include_router(auth.router, prefix="/api")
 app.include_router(tasks.router, prefix="/api")
+app.include_router(work_orders.router, prefix="/api")
 
 
 @app.get("/")

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -9,16 +9,23 @@ const router = useRouter()
 const route = useRoute()
 
 const menuItems = [
-  { icon: '📋', label: '任务管理', path: '/tasks', active: true },
-  { icon: '📊', label: '需求统计', path: '/demands', active: false, badge: '预' },
-  { icon: '👤', label: '用户管理', path: '/users', active: false, badge: '预' },
-  { icon: '⚙️', label: '系统设置', path: '/settings', active: false, badge: '预' },
+  { icon: '📋', label: '任务管理', path: '/tasks' },
+  { icon: '📄', label: '工单管理', path: '/work-orders' },
+  { icon: '📊', label: '需求统计', path: '/demands', badge: '预' },
+  { icon: '👤', label: '用户管理', path: '/users', badge: '预' },
+  { icon: '⚙️', label: '系统设置', path: '/settings', badge: '预' },
 ]
 
 const isCollapsed = ref(false)
 
+const currentPath = computed(() => route.path)
+
+function isActive(path: string): boolean {
+  return currentPath.value === path
+}
+
 function navigate(path: string) {
-  if (path !== '/tasks') {
+  if (path !== '/tasks' && path !== '/work-orders') {
     alert('该功能模块正在开发中...')
     return
   }
@@ -49,7 +56,7 @@ function navigate(path: string) {
         @click="navigate(item.path)"
         :class="cn(
           'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
-          item.active
+          isActive(item.path)
             ? 'bg-primary text-primary-foreground shadow-sm'
             : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
         )"

@@ -8,7 +8,13 @@ import type {
   TaskDetail,
   CreateTaskDetailRequest,
   UpdateTaskDetailRequest,
-  PageResult
+  PageResult,
+  WorkOrder,
+  CreateWorkOrderRequest,
+  UpdateWorkOrderRequest,
+  WorkOrderDetail,
+  CreateWorkOrderDetailRequest,
+  UpdateWorkOrderDetailRequest,
 } from '@/types'
 
 // Auth APIs
@@ -54,4 +60,43 @@ export const taskDetailApi = {
 
   delete: (taskId: number, detailId: number) =>
     api.delete(`/tasks/${taskId}/details/${detailId}`),
+}
+
+// WorkOrder APIs
+export const workOrderApi = {
+  list: (params: {
+    is_completed?: boolean
+    start_date?: string
+    end_date?: string
+    priority?: string
+    name?: string
+    page?: number
+    page_size?: number
+  }) => api.get<PageResult<WorkOrder>>('/work-orders', { params }),
+
+  get: (id: number) => api.get<WorkOrder>(`/work-orders/${id}`),
+
+  create: (data: CreateWorkOrderRequest) => api.post<WorkOrder>('/work-orders', data),
+
+  update: (id: number, data: UpdateWorkOrderRequest) => api.put<WorkOrder>(`/work-orders/${id}`, data),
+
+  delete: (id: number) => api.delete(`/work-orders/${id}`),
+
+  complete: (id: number) => api.post<WorkOrder>(`/work-orders/${id}/complete`),
+
+  defer: (id: number) => api.post<WorkOrder>(`/work-orders/${id}/defer`),
+}
+
+// WorkOrder Detail APIs
+export const workOrderDetailApi = {
+  list: (workOrderId: number) => api.get<WorkOrderDetail[]>(`/work-orders/${workOrderId}/details`),
+
+  create: (workOrderId: number, data: CreateWorkOrderDetailRequest) =>
+    api.post<WorkOrderDetail>(`/work-orders/${workOrderId}/details`, data),
+
+  update: (workOrderId: number, detailId: number, data: UpdateWorkOrderDetailRequest) =>
+    api.put<WorkOrderDetail>(`/work-orders/${workOrderId}/details/${detailId}`, data),
+
+  delete: (workOrderId: number, detailId: number) =>
+    api.delete(`/work-orders/${workOrderId}/details/${detailId}`),
 }

@@ -20,6 +20,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/work-orders',
+      name: 'WorkOrders',
+      component: () => import('@/views/WorkOrdersView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/:pathMatch(.*)*',
       redirect: '/tasks',
     },

@@ -24,6 +24,7 @@ class User(Base):
     )
 
     tasks: Mapped[list["Task"]] = relationship("Task", back_populates="user")
+    work_orders: Mapped[list["WorkOrder"]] = relationship("WorkOrder", back_populates="user")
 
     def __repr__(self):
         return f"<User {self.username}>"
